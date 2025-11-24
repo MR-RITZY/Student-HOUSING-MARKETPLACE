@@ -13,7 +13,7 @@ userservice = Annotated[UserService, Depends(get_userservice)]
 router = APIRouter(prefix="/users", tags=["Users"])
 
 
-@router.post("/register", response_model=UserCreated)
+@router.post("/register", response_model=UserCreated, status_code=status.HTTP_201_CREATED)
 async def create_user(user: NewUser, userservice: userservice):
     hashed_password = hash_password(user.password)
     user.password = hashed_password

@@ -3,7 +3,7 @@ from email_validator import validate_email
 from uuid import UUID
 
 from src.stu_house_market.utils import validate_password
-
+from src.stu_house_market.model.user import Role
 
 
 class NewUser(BaseModel):
@@ -11,15 +11,15 @@ class NewUser(BaseModel):
     lastname: str
     email: str
     password: str = Field(..., min_length=8)
-    role: str
+    role: Role
 
     @field_validator("email")
     def validate_and_get_normalized_email(cls, value: str):
         try:
-            validated_email_obj = validate_email(value)
-            return validated_email_obj[0]
-        except:
-            raise ValueError("Not a valid email")
+            validated_email = validate_email(value)
+            return  validated_email.email
+        except Exception as e:
+            raise ValueError(f"Not a valid email: {e}")
 
     @field_validator("password")
     def check_password(cls, value: str):
@@ -36,7 +36,7 @@ class User(BaseModel):
     firstname: str
     lastname: str
     email: str
-    role: str
+    role: Role
 
     model_config = ConfigDict(from_attributes=True)
 

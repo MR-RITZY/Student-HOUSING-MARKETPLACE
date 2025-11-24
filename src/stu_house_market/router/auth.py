@@ -8,7 +8,7 @@ from src.stu_house_market.exc import InvalidCredentialsException
 from src.stu_house_market.utils import verify_password, create_jwt
 from src.stu_house_market.schema.user import UserLogin
 from src.stu_house_market.oauth import get_user_from_refresh, get_user_from_login
-from stu_house_market.model.user import Users
+from src.stu_house_market.model.user import Users
 from src.stu_house_market.redis_manager import redis_client
 from src.stu_house_market.config import settings
 
@@ -42,6 +42,7 @@ async def login(
     ttl = settings.JWT_REFRESH_TOKEN_EXP * 24 * 3600
 
     await redis_client.setex(f"usr_{user.id}:refresh_token", ttl, refresh_token)
+
 
     return {
         "message": "Login Successful",

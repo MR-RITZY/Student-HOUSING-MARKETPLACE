@@ -5,7 +5,7 @@ from sqlalchemy import String, DateTime, func
 from uuid import UUID, uuid4
 from datetime import datetime
 
-from src.stu_house_market.model import Base
+from src.stu_house_market.model.base import Base
 
 
 

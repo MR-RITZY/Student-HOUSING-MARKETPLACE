@@ -7,9 +7,9 @@ from src.stu_house_market.exc import InvalidTokenException
 from src.stu_house_market.user_service import UserService, get_userservice
 from src.stu_house_market.redis_manager import redis_client
 
-login_scheme = OAuth2PasswordBearer(tokenUrl="auth/login", scheme_name="auth_scheme")
+login_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login", scheme_name="auth_scheme")
 refresh_scheme = OAuth2PasswordBearer(
-    tokenUrl="auth/refresh", scheme_name="refresh_scheme"
+    tokenUrl="/auth/refresh", scheme_name="refresh_scheme"
 )
 
 userservice = Annotated[UserService, Depends(get_userservice)]
@@ -46,12 +46,13 @@ async def get_user_from_login(
     return user
 
 
-async def get_user_from_refresh(token: Annotated[str, Depends(refresh_scheme)]):
+async def get_user_from_refresh(token: Annotated[str, Depends(refresh_scheme)], userservice: userservice):
     payload = decode_jwt(token, "refresh_token")
     if not payload:
         raise CredentialException
     user_id, user_email = payload["sub"], payload["email"]
-    redis_token = await redis_client.get(f"usr_{user_id}:refresh_token")
+    redis_key = f"usr_{user_id}:refresh_token"
+    redis_token = await redis_client.get(redis_key)
     if not redis_token or token != redis_token:
         raise CredentialException
     user = await userservice.get_user_by_id_and_email(user_id, user_email)

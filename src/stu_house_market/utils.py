@@ -60,18 +60,29 @@ def decode_jwt(token: str, expected_type: Literal["access_token", "refresh_token
         "verify_iat": True,
         "verify_aud": True,
         "verify_iss": True,
+        "require": [
+            "exp",
+            "iat",
+            "nbf",
+            "iss",
+            "aud",
+            "sub",
+            "email",
+            "jti",
+            "token_type",
+        ],
     }
     try:
         payload = jwt.decode(
-            token, settings.JWT_SECRET, settings.JWT_ALGORITHM, options=options
+            token,
+            settings.JWT_SECRET,
+            algorithms=[settings.JWT_ALGORITHM],
+            options=options,
+            audience=f"{settings.BASE_URL}/api",
+            issuer=settings.BASE_URL,
         )
-    except JWTError:
+    except JWTError as e:
         return None
-    if (
-        not payload.get("sub")
-        or not payload.get("email")
-        or not payload.get("jti")
-        or payload.get("token_type") != expected_type
-    ):
+    if payload.get("token_type") != expected_type:
         return None
     return payload

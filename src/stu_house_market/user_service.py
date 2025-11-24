@@ -4,16 +4,13 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
 
-from stu_house_market.model.user import Users
+from src.stu_house_market.model.user import Users
 from src.stu_house_market.db import get_db
 from uuid import UUID
 
 
-db = Annotated[AsyncSession, Depends(get_db)]
-
-
 class UserService:
-    def __init__(self, db: db):
+    def __init__(self, db: AsyncSession):
         self.db = db
 
     async def insert_new_user(self, user_data: dict):
@@ -23,7 +20,7 @@ class UserService:
             await self.db.commit()
             await self.db.refresh(user)
             return user
-        except:
+        except Exception as e:
             await self.db.rollback()
 
     async def get_user_by_id(self, id: str):
@@ -41,5 +38,5 @@ class UserService:
         return result.first()
 
 
-def get_userservice():
-    return UserService()
+def get_userservice(db : Annotated[AsyncSession, Depends(get_db)]):
+    return UserService(db)

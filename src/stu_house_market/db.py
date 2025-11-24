@@ -25,11 +25,10 @@ async def get_db():
 async def db_lifespan():
     async with async_engine.begin() as conn:
         try:
-            await conn.run_sync(Base.metadata.create_all, async_engine)
+            await conn.run_sync(Base.metadata.create_all)
             await conn.commit()
             yield
         except Exception as e:
-            print(e)
             yield
         finally:
             await async_engine.dispose()

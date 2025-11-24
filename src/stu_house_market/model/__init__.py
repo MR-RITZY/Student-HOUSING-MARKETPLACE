@@ -1,4 +1,2 @@
-from sqlalchemy.orm import DeclarativeBase
-
-class Base(DeclarativeBase):
-    pass
+from src.stu_house_market.model.base import Base
+from src.stu_house_market.model.user import Users

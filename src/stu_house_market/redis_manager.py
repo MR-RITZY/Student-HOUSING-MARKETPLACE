@@ -9,8 +9,7 @@ connection_kwargs = dict(
     host=settings.REDIS_HOST,
     port=settings.REDIS_PORT,
     db=settings.REDIS_DB,
-    password=settings.REDIS_PASSWORD,
-    max_connections=5.0,
+    max_connections=3,
     socket_timeout=30.0,
     socket_connect_timeout=5.0,
     socket_keepalive=True,
@@ -67,7 +66,6 @@ async def redis_lifespan():
         await redis_client.ping()
         yield redis_client
     except Exception as e:
-        print(str(e))
         raise
     finally:
         await redis_client.terminate()
