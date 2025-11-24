@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, status, Request
+from fastapi.security import OAuth2PasswordRequestForm
 from typing import Annotated
 import time
 
 from src.stu_house_market.user_service import get_userservice, UserService
-from fastapi.security import OAuth2PasswordRequestForm
 from src.stu_house_market.exc import InvalidCredentialsException
 from src.stu_house_market.utils import verify_password, create_jwt
 from src.stu_house_market.schema.user import UserLogin
