@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine, AsyncSession
 from contextlib import asynccontextmanager
 
-from stu_house_market.model import Base
+from src.stu_house_market.model import Base
 from src.stu_house_market.config import settings
 
 db_url = (
