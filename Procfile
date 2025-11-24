@@ -1,0 +1,1 @@
+web: uvicorn src.stu_house_market.main:app --host 0.0.0.0 --port $PORT
