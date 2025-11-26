@@ -1,6 +1,5 @@
 from redis.asyncio import Redis, ConnectionPool, SSLConnection, Connection
 from src.stu_house_market.config import settings
-from ssl import CERT_REQUIRED
 from typing import Optional, Any
 from contextlib import asynccontextmanager
 
@@ -24,7 +23,7 @@ connection_kwargs = dict(
 if settings.ENV == "PROD":
     connection_kwargs.update(
         {
-            "ssl_cert_reqs": CERT_REQUIRED,
+            "ssl_cert_reqs": None,
             "username": settings.REDIS_USERNAME,
             "password": settings.REDIS_PASSWORD,
         }
