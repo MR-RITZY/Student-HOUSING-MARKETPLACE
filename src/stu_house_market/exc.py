@@ -45,8 +45,20 @@ class InvalidTokenException(HTTPException):
     pass
 
 
+async def unverified_user(request: Request, exc: HTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"error": "Not A Verified User", "detail": exc.detail},
+    )
+
+
+class UnverifiedUserException(HTTPException):
+    pass
+
+
 def register_exceptions(app: FastAPI):
     app.add_exception_handler(UserAlreadyExistsException, user_already_exists)
     app.add_exception_handler(UserNotFoundException, user_not_found)
     app.add_exception_handler(InvalidCredentialsException, invalid_credentials)
     app.add_exception_handler(InvalidTokenException, invalid_token)
+    app.add_exception_handler(UnverifiedUserException, unverified_user)

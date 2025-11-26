@@ -9,8 +9,6 @@ connection_kwargs = dict(
     host=settings.REDIS_HOST,
     port=settings.REDIS_PORT,
     db=settings.REDIS_DB,
-    username=settings.REDIS_USERNAME,
-    password=settings.REDIS_PASSWORD,
     max_connections=3,
     socket_timeout=30.0,
     socket_connect_timeout=5.0,
@@ -19,11 +17,18 @@ connection_kwargs = dict(
     health_check_interval=30.0,
     decode_responses=True,
     client_name=settings.APP_NAME,
-    connection_class=SSLConnection if settings.REDIS_SSL_ENABLED else Connection,
+    connection_class=SSLConnection if settings.ENV == "PROD" else Connection,
 )
 
-if settings.REDIS_SSL_ENABLED:
-    connection_kwargs["ssl_cert_reqs"] = CERT_REQUIRED
+
+if settings.ENV == "PROD":
+    connection_kwargs.update(
+        {
+            "ssl_cert_reqs": CERT_REQUIRED,
+            "username": settings.REDIS_USERNAME,
+            "password": settings.REDIS_PASSWORD,
+        }
+    )
 
 
 class RedisManager:
@@ -45,16 +50,16 @@ class RedisManager:
     async def ping(self):
         return await self.redis.ping()
 
-    async def setex(self, key:str, ttl:int, value:Any):
+    async def setex(self, key: str, ttl: int, value: Any):
         return await self.redis.setex(key, ttl, value)
 
-    async def get(self, key:str):
+    async def get(self, key: str):
         return await self.redis.get(key)
 
-    async def ttl(self, key:str):
+    async def ttl(self, key: str):
         return await self.redis.ttl(key)
 
-    async def delete(self, key:str):
+    async def delete(self, key: str):
         return await self.redis.delete(key)
 
 

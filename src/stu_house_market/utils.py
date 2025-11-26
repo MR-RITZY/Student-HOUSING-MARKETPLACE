@@ -4,9 +4,13 @@ from jose import jwt, JWTError
 from datetime import datetime, timedelta, timezone
 from typing import Literal
 from uuid import uuid4
+from itsdangerous import URLSafeTimedSerializer
+
 
 
 from src.stu_house_market.config import settings
+
+
 
 pwd_context = CryptContext("bcrypt")
 
@@ -19,12 +23,16 @@ def verify_password(password: str, hashed_password: str):
     return pwd_context.verify(password, hashed_password)
 
 
+
+
 schema = PasswordValidator()
 schema.has(r"[a-z]+").has(r"[A-Z]+").has(r"\d+").has(r"\S").has().symbols().min(8)
 
 
 def validate_password(password: str):
     return schema.validate(password)
+
+
 
 
 def create_jwt(data: dict, token_type: Literal["access_token", "refresh_token"]):
@@ -86,3 +94,16 @@ def decode_jwt(token: str, expected_type: Literal["access_token", "refresh_token
     if payload.get("token_type") != expected_type:
         return None
     return payload
+
+
+serializer = URLSafeTimedSerializer(settings.SAFE_URL_SECRET, salt="Student Housing Marketplace Safe URL")
+
+def get_sefe_token(code:str | dict):
+    return serializer.dumps(code)
+
+def decode_safe_token(token:str):
+    try:
+        return serializer.loads(token, max_age=24*3600)
+    except Exception:
+        return None
+

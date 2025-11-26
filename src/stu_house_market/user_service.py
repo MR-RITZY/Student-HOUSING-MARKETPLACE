@@ -36,6 +36,19 @@ class UserService:
             select(Users).where(Users.id == UUID(id), Users.email == email)
         )
         return result.first()
+    
+    async def update_user_data(self, id: str, user_data:dict):
+        user = await self.db.get(Users, UUID(id))
+        if not user:
+            return None
+        protected_field = {"id", "created_at"}
+        for key, value in user_data.items():
+            if key not in protected_field:
+                setattr(user, key, value)
+        await self.db.commit()
+        await self.db.refresh(user)
+        return user
+
 
 
 def get_userservice(db : Annotated[AsyncSession, Depends(get_db)]):
