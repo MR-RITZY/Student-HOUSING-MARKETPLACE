@@ -74,7 +74,3 @@ async def verify_new_account(token: str, userservice: userservice):
     await redis_client.delete(f"usr_{user_id}:email_verification_code")
 
     return RedirectResponse(f"{settings.FRONTEND_HOST}/login", status_code=status.HTTP_302_FOUND)
-
-@router.get("/")
-async def get_root():
-    return RedirectResponse(settings.FRONTEND_HOST, status_code=status.HTTP_302_FOUND)
