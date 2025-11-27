@@ -8,7 +8,7 @@ from src.stu_house_market.schema.user import UserCreated, NewUser
 from src.stu_house_market.utils import hash_password, get_sefe_token, decode_safe_token
 from src.stu_house_market.exc import UserAlreadyExistsException, InvalidTokenException
 from src.stu_house_market.redis_manager import redis_client
-from src.stu_house_market.background_tasks.celery_task import send_email_message
+from src.stu_house_market.background_tasks.celery_task import send_email
 from src.stu_house_market.config import settings
 
 
@@ -38,11 +38,11 @@ async def create_user(user: NewUser, userservice: userservice):
         "firstname": new_user.firstname,
         "verification_link": verification_link,
     }
-    send_email_message.delay(
+    send_email.delay(
         recipients=[new_user.email],
         subject="User Verification Email",
-        html_template="verify-new-account.html",
-        template_body=mail_template_data,
+        template_rel_path="verify-new-account.html",
+        template_data=mail_template_data,
     )
     await redis_client.setex(
         f"usr_{new_user.id}:email_verification_code", 24 * 3600, token_code

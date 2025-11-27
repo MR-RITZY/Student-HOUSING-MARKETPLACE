@@ -1,10 +1,13 @@
 from celery import Celery
 from asgiref.sync import async_to_sync
-from typing import Optional, List
+import resend
+from typing import List, Optional
+from pathlib import Path
+from jinja2 import Environment, FileSystemLoader
 
 
 from src.stu_house_market.config import settings
-from src.stu_house_market.background_tasks.email_sender import send_email
+
 
 broker_url = (
     f"amqp://{settings.RABBITMQ_USERNAME}:{settings.RABBITMQ_PASSWORD}@"
@@ -44,23 +47,54 @@ def run_async_task_as_sync(func, *args, **kwargs):
         raise
 
 
+static_path = Path(__file__).parent.parent / "static"
+
+env = Environment(loader=FileSystemLoader(static_path))
+
+
 @app.task(bind=True, max_retries=3, default_retry_delay=10)
-def send_email_message(self,
+def send_email(
+    self,
     recipients: List[str],
     subject: str,
-    body: Optional[str] = None,
-    html_template: Optional[str] = None,
-    template_body: Optional[dict] = None,
+    text: Optional[str] = None,
+    template_rel_path: Optional[str] = None,
+    template_data: Optional[dict] = None,
 ):
     try:
+        html = None
 
-        return run_async_task_as_sync(
-            send_email,
-            recipients=recipients,
-            subject=subject,
-            body=body,
-            html_template=html_template,
-            template_body=template_body,
-        )
+        template_abs_path = static_path / template_rel_path
+
+        if template_rel_path and template_abs_path.exists():
+            if template_data is not None:
+                html = render_template(template_rel_path, template_data)
+            else:
+                html = template_abs_path.read_text()
+
+
+        resend.api_key = settings.RESEND_API_KEY        
+        params: resend.Emails.SendParams = {
+            "from": "noreply@student-housing-marketplace.com",
+            "to": recipients,
+            "subject": subject,
+            "html": html,
+            "text": text,
+        }
+
+        email = resend.Emails.send(params)
+        print(email)
+        return "sent"
     except Exception as e:
         raise self.retry(exc=e)
+
+
+def render_template(file_name: str, data: dict):
+    try:
+        template = env.get_template(file_name)
+        return template.render(data or {})
+    except Exception:
+        return None
+
+
+

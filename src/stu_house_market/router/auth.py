@@ -12,7 +12,7 @@ from src.stu_house_market.oauth import get_user_from_refresh, get_user_from_logi
 from src.stu_house_market.model.user import Users
 from src.stu_house_market.redis_manager import redis_client
 from src.stu_house_market.config import settings
-from src.stu_house_market.background_tasks.celery_task import send_email_message
+from src.stu_house_market.background_tasks.celery_task import send_email
 
 
 
@@ -40,7 +40,7 @@ async def login(
             "firstname": user.firstname,
             "verification_link": verification_link,
         }
-        send_email_message.delay(
+        send_email.delay(
             recipients=[user.email],
             subject="User Verification Email",
             html_template="verify-new-account.html",
