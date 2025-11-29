@@ -59,18 +59,26 @@ async def verify_new_account(token: str, userservice: userservice):
             detail="Invalid or Expired Token from the Verification Link\nRe-verify",
         )
     code, user_id = payload.get("code"), payload.get("user_id")
+    if not code or not user_id:
+        raise InvalidTokenException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or Expired Token from the Verification Link\nRe-verify",
+        )
+    user = await userservice.get_user_by_id(user_id)
+    if not user:
+        raise InvalidTokenException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or Expired Token from the Verification Link\nRe-verify",
+        )
+    if user.is_verified:
+        return RedirectResponse(settings.FRONTEND_HOST, status_code=status.HTTP_302_FOUND)
     redis_code = await redis_client.get(f"usr_{user_id}:email_verification_code")
     if not redis_code or code != redis_code:
         raise InvalidTokenException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid or Expired Token from the Verification Link\nRe-verify",
         )
-    updated_user = await userservice.update_user_data(user_id, {"is_verified": True})
-    if not updated_user:
-        raise InvalidTokenException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid or Expired Token from the Verification Link\nRe-verify",
-        )
+    await userservice.update_user_data(user_id, {"is_verified": True}, user=user)
     await redis_client.delete(f"usr_{user_id}:email_verification_code")
 
     return RedirectResponse(f"{settings.FRONTEND_HOST}/login", status_code=status.HTTP_302_FOUND)

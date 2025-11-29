@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Annotated
+from typing import Annotated, Optional
 
 from src.stu_house_market.model.user import Users
 from src.stu_house_market.db import get_db
@@ -37,8 +37,9 @@ class UserService:
         )
         return result.first()
     
-    async def update_user_data(self, id: str, user_data:dict):
-        user = await self.db.get(Users, UUID(id))
+    async def update_user_data(self, id: str, user_data:dict, user: Optional[Users] = None):
+        if not user:
+            user = await self.db.get(Users, UUID(id))
         if not user:
             return None
         protected_field = {"id", "created_at"}
