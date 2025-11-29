@@ -50,7 +50,7 @@ def run_async_task_as_sync(func, *args, **kwargs):
 static_path = Path(__file__).parent.parent / "static"
 
 env = Environment(loader=FileSystemLoader(static_path))
-
+resend.api_key = settings.RESEND_API_KEY
 
 @app.task(bind=True, max_retries=3, default_retry_delay=10)
 def send_email(
@@ -72,10 +72,9 @@ def send_email(
             else:
                 html = template_abs_path.read_text()
 
-
-        resend.api_key = settings.RESEND_API_KEY        
+        
         params: resend.Emails.SendParams = {
-            "from": "noreply@student-housing-marketplace.com",
+            "from": settings.MAIL_FROM,
             "to": recipients,
             "subject": subject,
             "html": html,
@@ -83,7 +82,6 @@ def send_email(
         }
 
         email = resend.Emails.send(params)
-        print(email)
         return "sent"
     except Exception as e:
         raise self.retry(exc=e)

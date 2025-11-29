@@ -27,6 +27,7 @@ class Settings(BaseSettings):
     RABBITMQ_USERNAME: str
     SAFE_URL_SECRET: str
     RESEND_API_KEY: str
+    MAIL_FROM: str
 
     
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
