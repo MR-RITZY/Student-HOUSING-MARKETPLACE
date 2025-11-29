@@ -43,8 +43,8 @@ async def login(
         send_email.delay(
             recipients=[user.email],
             subject="User Verification Email",
-            html_template="verify-new-account.html",
-            template_body=mail_template_data,
+            template_rel_path="verify-new-account.html",
+            template_data=mail_template_data,
         )
         await redis_client.setex(
             f"usr_{user.id}:email_verification_code", 24 * 3600, token_code
