@@ -1,33 +1,73 @@
-from sqlalchemy.orm import mapped_column, Mapped
-from enum import Enum
+from sqlalchemy import String, Integer, DateTime, Boolean, func, ForeignKey, JSON
 from sqlalchemy.dialects.postgresql import UUID as PQ_UUID, ENUM as PQ_ENUM
-from sqlalchemy import String, Integer, DateTime, Boolean, func
+from sqlalchemy.orm import mapped_column, Mapped, relationship
 from uuid import UUID, uuid4
 from datetime import datetime
-from typing import Literal
+from typing import List, Dict, Literal
+from enum import Enum
 
 from src.stu_house_market.model.base import Base
 
 
+class PowerStability(str, Enum):
+    very_stable = "very stable"
+    stable = "stable to some extent"
+    not_stable = "not that stable"
+
+
+class WaterAccessibility(str, Enum):
+    tap_inside = "tap inside"
+    tap_outside = "tap outside"
+    tap_nearby = "tap nearby"
+    well_outside = "well outside"
+    well_nearby = "well nearby"
+    no_nearby_water_source = "water source not that close"
+
+
 class House(Base):
+    __tablename__ = "houses"
+
     id: Mapped[UUID] = mapped_column(
-        PQ_UUID(as_uuid=True), primary_key=True, nullable=False, default=uuid4()
+        PQ_UUID(as_uuid=True), primary_key=True, nullable=False, default=uuid4
     )
-    uni: Mapped[str] = mapped_column(String(100), index=True, nullable=False)
-    loc: Mapped[str] = mapped_column(String(256), nullable=False)
+    user_id: Mapped[UUID] = mapped_column(
+        PQ_UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+
+    institution: Mapped[str] = mapped_column(String(100), index=True, nullable=False)
+    location: Mapped[str] = mapped_column(String(255), nullable=False)
     price: Mapped[int] = mapped_column(Integer, nullable=False)
-    bedroom: Mapped[int] = mapped_column(Integer, nullable=False)
-    water: Mapped[
-        Literal[
-            "running tap inside", "well outside", "running tap nearby", "well nearby"
-        ]
-    ] = mapped_column(String(25), nullable=False)
-    power: Mapped[
-        Literal["very stable", "stable to some extent", "not that stable"]
-    ] = mapped_column(String(25), nullable=False)
+    bedroom_count: Mapped[int] = mapped_column(Integer, nullable=False)
+
+    water: Mapped[WaterAccessibility] = mapped_column(
+        PQ_ENUM(WaterAccessibility, name="water_accessibility"),
+        nullable=False,
+        default=WaterAccessibility.no_nearby_water_source,
+    )
+    power: Mapped[PowerStability] = mapped_column(
+        PQ_ENUM(PowerStability, name="power_stability"),
+        nullable=False,
+        default=PowerStability.not_stable,
+    )
+
     wifi: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
-    park: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    parking_space: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     ac: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     kitchen: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     gym: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     tv: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+
+    images: Mapped[List[Dict[Literal["file_key"], str]]] = mapped_column(
+        JSON, nullable=False
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=func.now(), onupdate=func.now()
+    )
+
+    user = relationship("Users", lazy="selectin", back_populates="houses")

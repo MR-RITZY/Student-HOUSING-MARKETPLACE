@@ -1,8 +1,9 @@
 from redis.asyncio import Redis, ConnectionPool, Connection
-from src.stu_house_market.config import settings
 from typing import Optional, Any
 from contextlib import asynccontextmanager
 
+
+from src.stu_house_market.core.config import settings
 
 connection_kwargs = dict(
     host=settings.REDIS_HOST,

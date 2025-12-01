@@ -4,14 +4,14 @@ from typing import Annotated
 from uuid import uuid4
 import time
 
-from src.stu_house_market.user_service import get_userservice, UserService
-from src.stu_house_market.exc import InvalidCredentialsException, UnverifiedUserException
-from src.stu_house_market.utils import verify_password, create_jwt, get_sefe_token
+from src.stu_house_market.services.user_service import get_userservice, UserService
+from src.stu_house_market.core.exc import InvalidCredentialsException, UnverifiedUserException
+from src.stu_house_market.core.utils import verify_password, create_jwt, get_sefe_token
 from src.stu_house_market.schema.user import UserLogin
-from src.stu_house_market.oauth import get_user_from_refresh, get_user_from_login
+from src.stu_house_market.core.oauth import get_user_from_refresh, get_user_from_login
 from src.stu_house_market.model.user import Users
-from src.stu_house_market.redis_manager import redis_client
-from src.stu_house_market.config import settings
+from src.stu_house_market.db.redis_manager import redis_client
+from src.stu_house_market.core.config import settings
 from src.stu_house_market.background_tasks.celery_task import send_email
 
 
@@ -69,10 +69,12 @@ async def login(
 
     await redis_client.setex(f"usr_{user.id}:refresh_token", ttl, refresh_token)
 
+    logged_in_user = userservice.update_user_data({"is_active": True}, user=user)
+
 
     return {
         "message": "Login Successful",
-        "user": user,
+        "user": logged_in_user,
         "access_token": access_token,
         "refresh_token": refresh_token,
         "token_type": "bearer",
@@ -105,5 +107,7 @@ async def logout(
         "blacklisted",
     )
     await redis_client.delete(f"usr_{str(user.id)}:refresh_token")
+
+    logged_in_user = userservice.update_user_data({"is_active": False}, user=user)
 
     return {"message": "Logged out"}

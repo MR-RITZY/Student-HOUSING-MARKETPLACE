@@ -8,7 +8,7 @@ from itsdangerous import URLSafeTimedSerializer
 
 
 
-from src.stu_house_market.config import settings
+from src.stu_house_market.core.config import settings
 
 
 pwd_context = CryptContext("bcrypt")

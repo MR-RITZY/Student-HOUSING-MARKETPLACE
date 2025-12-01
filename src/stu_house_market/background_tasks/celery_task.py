@@ -6,7 +6,7 @@ from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
 
 
-from src.stu_house_market.config import settings
+from src.stu_house_market.core.config import settings
 
 
 broker_url = (
@@ -20,7 +20,7 @@ backend_url = (
 )
 
 app = Celery(
-    "stu_house_market",
+    "stu_house_market background_task worker",
     broker=broker_url,
     backend=backend_url,
     include=["src.stu_house_market.background_tasks.celery_task"],

@@ -3,13 +3,13 @@ from fastapi.responses import RedirectResponse
 from typing import Annotated
 from uuid import uuid4
 
-from src.stu_house_market.user_service import get_userservice, UserService
+from src.stu_house_market.services.user_service import get_userservice, UserService
 from src.stu_house_market.schema.user import UserCreated, NewUser
-from src.stu_house_market.utils import hash_password, get_sefe_token, decode_safe_token
-from src.stu_house_market.exc import UserAlreadyExistsException, InvalidTokenException
-from src.stu_house_market.redis_manager import redis_client
+from src.stu_house_market.core.utils import hash_password, get_sefe_token, decode_safe_token
+from src.stu_house_market.core.exc import UserAlreadyExistsException, InvalidTokenException
+from src.stu_house_market.db.redis_manager import redis_client
 from src.stu_house_market.background_tasks.celery_task import send_email
-from src.stu_house_market.config import settings
+from src.stu_house_market.core.config import settings
 
 
 userservice = Annotated[UserService, Depends(get_userservice)]
@@ -78,7 +78,7 @@ async def verify_new_account(token: str, userservice: userservice):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid or Expired Token from the Verification Link\nRe-verify",
         )
-    await userservice.update_user_data(user_id, {"is_verified": True}, user=user)
+    await userservice.update_user_data({"is_verified": True}, user=user)
     await redis_client.delete(f"usr_{user_id}:email_verification_code")
 
     return RedirectResponse(f"{settings.FRONTEND_HOST}/login", status_code=status.HTTP_302_FOUND)

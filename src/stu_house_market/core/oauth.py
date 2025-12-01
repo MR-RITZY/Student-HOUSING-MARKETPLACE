@@ -2,10 +2,10 @@ from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, status, Request
 from typing import Annotated
 
-from src.stu_house_market.utils import decode_jwt
-from src.stu_house_market.exc import InvalidTokenException
-from src.stu_house_market.user_service import UserService, get_userservice
-from src.stu_house_market.redis_manager import redis_client
+from src.stu_house_market.core.utils import decode_jwt
+from src.stu_house_market.core.exc import InvalidTokenException
+from src.stu_house_market.services.user_service import UserService, get_userservice
+from src.stu_house_market.db.redis_manager import redis_client
 
 login_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login", scheme_name="auth_scheme")
 refresh_scheme = OAuth2PasswordBearer(

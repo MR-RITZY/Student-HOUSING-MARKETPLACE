@@ -3,10 +3,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated, Optional
+from uuid import UUID
 
 from src.stu_house_market.model.user import Users
-from src.stu_house_market.db import get_db
-from uuid import UUID
+from src.stu_house_market.db.db import get_db
+
 
 
 class UserService:
@@ -36,8 +37,10 @@ class UserService:
             select(Users).where(Users.id == UUID(id), Users.email == email)
         )
         return result.first()
-    
-    async def update_user_data(self, id: str, user_data:dict, user: Optional[Users] = None):
+
+    async def update_user_data(
+        self, user_data: dict, id: Optional[str] = None, user: Optional[Users] = None
+    ):
         if not user:
             user = await self.db.get(Users, UUID(id))
         if not user:
@@ -51,6 +54,5 @@ class UserService:
         return user
 
 
-
-def get_userservice(db : Annotated[AsyncSession, Depends(get_db)]):
+def get_userservice(db: Annotated[AsyncSession, Depends(get_db)]):
     return UserService(db)

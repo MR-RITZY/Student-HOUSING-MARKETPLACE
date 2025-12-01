@@ -28,6 +28,10 @@ class Settings(BaseSettings):
     SAFE_URL_SECRET: str
     RESEND_API_KEY: str
     MAIL_FROM: str
+    B2_APP_KEY_ID: str
+    B2_APP_KEY: str
+    B2_BUCKET: str
+    B2_S3_ENDPOINT: str
 
     
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")

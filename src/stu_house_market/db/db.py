@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine, Asyn
 from contextlib import asynccontextmanager
 
 from src.stu_house_market.model import Base
-from src.stu_house_market.config import settings
+from src.stu_house_market.core.config import settings
 
 db_url = (
     f"postgresql+asyncpg://{settings.DB_USERNAME}:{settings.DB_PASSWORD}@"

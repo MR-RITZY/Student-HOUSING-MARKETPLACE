@@ -2,7 +2,7 @@ from pydantic import BaseModel, field_validator, Field, ConfigDict
 from email_validator import validate_email
 from uuid import UUID
 
-from src.stu_house_market.utils import validate_password
+from src.stu_house_market.core.utils import validate_password
 from src.stu_house_market.model.user import Role
 
 

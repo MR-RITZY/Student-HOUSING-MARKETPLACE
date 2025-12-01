@@ -55,6 +55,16 @@ async def unverified_user(request: Request, exc: HTTPException):
 class UnverifiedUserException(HTTPException):
     pass
 
+async def unexpected_error(request: Request, exc: HTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"error": "Unexpected Error", "detail": exc.detail},
+    )
+
+
+class UnexpectedError(HTTPException):
+    pass
+
 
 def register_exceptions(app: FastAPI):
     app.add_exception_handler(UserAlreadyExistsException, user_already_exists)
@@ -62,3 +72,4 @@ def register_exceptions(app: FastAPI):
     app.add_exception_handler(InvalidCredentialsException, invalid_credentials)
     app.add_exception_handler(InvalidTokenException, invalid_token)
     app.add_exception_handler(UnverifiedUserException, unverified_user)
+    app.add_exception_handler(UnexpectedError, unexpected_error)

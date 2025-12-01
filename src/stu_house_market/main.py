@@ -4,12 +4,13 @@ from fastapi.responses import RedirectResponse
 from contextlib import asynccontextmanager, AsyncExitStack
 
 
-from src.stu_house_market.db import db_lifespan
-from src.stu_house_market.exc import register_exceptions
-from src.stu_house_market.redis_manager import redis_lifespan
+from src.stu_house_market.db.db import db_lifespan
+from src.stu_house_market.core.exc import register_exceptions
+from src.stu_house_market.db.redis_manager import redis_lifespan
 from src.stu_house_market.router.auth import router as auth_router
 from src.stu_house_market.router.user import router as user_router
-from src.stu_house_market.config import settings
+from src.stu_house_market.router.house import router as house_router
+from src.stu_house_market.core.config import settings
 
 
 
@@ -33,6 +34,7 @@ app.add_middleware(
 
 app.include_router(user_router)
 app.include_router(auth_router)
+app.include_router(house_router)
 register_exceptions(app)
 
 

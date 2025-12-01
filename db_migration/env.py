@@ -4,7 +4,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
-from src.stu_house_market.config import settings
+from stu_house_market.core.config import settings
 from src.stu_house_market.model import Base
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

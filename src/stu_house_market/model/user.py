@@ -1,4 +1,4 @@
-from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy.orm import mapped_column, Mapped, Relationship
 from enum import Enum
 from sqlalchemy.dialects.postgresql import UUID as PQ_UUID, ENUM as PQ_ENUM
 from sqlalchemy import String, DateTime, func, Boolean
@@ -6,8 +6,6 @@ from uuid import UUID, uuid4
 from datetime import datetime
 
 from src.stu_house_market.model.base import Base
-
-
 
 
 class Role(str, Enum):
@@ -33,4 +31,8 @@ class Users(Base):
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, default=func.now(), onupdate=func.now()
+    )
+
+    houses = Relationship(
+        "House", back_populates="user", lazy="selectin", cascade="all, delete-orphan"
     )
