@@ -2,13 +2,15 @@ from passlib.context import CryptContext
 from password_validator import PasswordValidator
 from jose import jwt, JWTError
 from datetime import datetime, timedelta, timezone
-from typing import Literal
+from typing import Literal, Optional
 from uuid import uuid4
 from itsdangerous import URLSafeTimedSerializer
 
 
-
 from src.stu_house_market.core.config import settings
+from src.stu_house_market.db.redis_manager import redis_client
+"""from src.stu_house_market.background_tasks.celery_task import send_email"""
+from src.stu_house_market.model.user import Users
 
 
 pwd_context = CryptContext("bcrypt")
@@ -96,7 +98,7 @@ serializer = URLSafeTimedSerializer(
 )
 
 
-def get_sefe_token(code: str | dict):
+def get_safe_token(code: str | dict):
     return serializer.dumps(code)
 
 
@@ -106,3 +108,39 @@ def decode_safe_token(token: str):
     except Exception:
         return None
 
+
+"""def mail_sender(
+    user: Users,
+    subject: str,
+    template_path: Optional[str] = None,
+    template_data: Optional[dict] = None,
+):
+    send_email.delay(
+        recipients=[user.email],
+        subject=subject,
+        template_rel_path=template_path,
+        template_data=template_data,
+    )
+
+
+async def verification_mail_handler(user: Users):
+    token_code = str(uuid4())
+    safe_token_data = {"code": token_code, "user_id": str(user.id)}
+    token = get_safe_token(safe_token_data)
+    verification_link = (
+        f"{settings.BASE_URL}/users/verify/your-new-account?token={token}"
+    )
+    mail_template_data = {
+        "firstname": user.firstname,
+        "verification_link": verification_link,
+    }
+    mail_sender(
+        user,
+        "User Verification Email",
+        template_path="verify-new-account.html",
+        template_data=mail_template_data,
+    )
+    await redis_client.setex(
+        f"usr_{user.id}:email_verification_code", 24 * 3600, token_code
+    )
+"""

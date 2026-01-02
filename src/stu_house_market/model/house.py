@@ -1,5 +1,5 @@
-from sqlalchemy import String, Integer, DateTime, Boolean, func, ForeignKey, JSON
-from sqlalchemy.dialects.postgresql import UUID as PQ_UUID, ENUM as PQ_ENUM
+from sqlalchemy import String, Integer, DateTime, Boolean, func, ForeignKey
+from sqlalchemy.dialects.postgresql import UUID as PQ_UUID, ENUM as PQ_ENUM, JSONB
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 from uuid import UUID, uuid4
 from datetime import datetime
@@ -16,12 +16,23 @@ class PowerStability(str, Enum):
 
 
 class WaterAccessibility(str, Enum):
-    tap_inside = "tap inside"
-    tap_outside = "tap outside"
+    tap_inside = "tap inside the apartment"
+    tap_outside = "tap outside the apartment"
     tap_nearby = "tap nearby"
     well_outside = "well outside"
     well_nearby = "well nearby"
     no_nearby_water_source = "water source not that close"
+
+
+class EnvironmentSecurity(str, Enum):
+    highly_secured = "highly secured environment"
+    secured_to_some_extent = "secured to some extent"
+    not_secured = "not that secured"
+
+
+class PaymentDuration(str, Enum):
+    monthly = "monthly"
+    anually = "anually"
 
 
 class House(Base):
@@ -32,15 +43,23 @@ class House(Base):
     )
     user_id: Mapped[UUID] = mapped_column(
         PQ_UUID(as_uuid=True),
-        ForeignKey("users.id", ondelete="CASCADE"),
+        ForeignKey("users.id", name="user_id", ondelete="CASCADE"),
         nullable=False,
     )
-
+    house_title: Mapped[str] = mapped_column(String(255), index=True, nullable=False)
+    description: Mapped[str] = mapped_column(String(1000), nullable=False)
     institution: Mapped[str] = mapped_column(String(100), index=True, nullable=False)
     location: Mapped[str] = mapped_column(String(255), nullable=False)
     price: Mapped[int] = mapped_column(Integer, nullable=False)
+    payment_duration: Mapped[PaymentDuration] = mapped_column(
+        PQ_ENUM(PaymentDuration, name="payment_duration"), nullable=False
+    )
     bedroom_count: Mapped[int] = mapped_column(Integer, nullable=False)
-
+    security: Mapped[EnvironmentSecurity] = mapped_column(
+        PQ_ENUM(EnvironmentSecurity, name="environment_security"),
+        nullable=False,
+        default=EnvironmentSecurity.not_secured,
+    )
     water: Mapped[WaterAccessibility] = mapped_column(
         PQ_ENUM(WaterAccessibility, name="water_accessibility"),
         nullable=False,
@@ -60,7 +79,7 @@ class House(Base):
     tv: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     images: Mapped[List[Dict[Literal["file_key"], str]]] = mapped_column(
-        JSON, nullable=False
+        JSONB, nullable=False
     )
 
     created_at: Mapped[datetime] = mapped_column(

@@ -5,8 +5,8 @@ from src.stu_house_market.model import Base
 from src.stu_house_market.core.config import settings
 
 db_url = (
-    f"postgresql+asyncpg://{settings.DB_USERNAME}:{settings.DB_PASSWORD}@"
-    f"{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}"
+    f"postgresql+psycopg://{settings.DB_USERNAME}:{settings.DB_PASSWORD}@"
+    f"{settings.DB_HOST}/{settings.DB_NAME}"
 )
 
 async_engine = create_async_engine(db_url)

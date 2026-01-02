@@ -9,7 +9,6 @@ connection_kwargs = dict(
     host=settings.REDIS_HOST,
     port=settings.REDIS_PORT,
     db=settings.REDIS_DB,
-    max_connections=3,
     socket_timeout=30.0,
     socket_connect_timeout=5.0,
     socket_keepalive=True,
@@ -17,7 +16,6 @@ connection_kwargs = dict(
     health_check_interval=30.0,
     decode_responses=True,
     client_name=settings.APP_NAME,
-    connection_class=Connection,
 )
 
 
@@ -36,9 +34,12 @@ class RedisManager:
         self.redis: Optional[Redis] = None
 
     def initialize_redis(self):
-        if not self.pool or not self.redis:
-            self.pool = ConnectionPool(**connection_kwargs)
-            self.redis = Redis(connection_pool=self.pool)
+        if self.redis:
+            return
+        self.pool = ConnectionPool(
+            connection_class=Connection, max_connections=10, **connection_kwargs
+        )
+        self.redis = Redis(connection_pool=self.pool)
 
     async def terminate(self):
         if self.redis:

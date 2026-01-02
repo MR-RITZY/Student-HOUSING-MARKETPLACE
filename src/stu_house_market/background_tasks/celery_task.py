@@ -1,4 +1,4 @@
-from celery import Celery
+"""from celery import Celery
 from asgiref.sync import async_to_sync
 import resend
 from typing import List, Optional
@@ -96,3 +96,4 @@ def render_template(file_name: str, data: dict):
 
 
 
+"""

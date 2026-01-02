@@ -2,11 +2,11 @@ from fastapi import APIRouter, Query, Depends, status
 from typing import Annotated, List
 
 from src.stu_house_market.services.house_service import get_house_service, HouseService
-from src.stu_house_market.core.oauth import get_user_from_login
+from src.stu_house_market.core.auth import get_user_from_login
 from src.stu_house_market.model.user import Users
 from src.stu_house_market.schema.house import PostHouse
 from src.stu_house_market.model.house import PowerStability, WaterAccessibility
-from src.stu_house_market.core.image_service import (
+from src.stu_house_market.core.image_handler import (
     generate_presigned_upload_urls,
     generate_presigned_download_urls,
 )
@@ -36,6 +36,7 @@ async def get_download_url(file_keys: List[str], user: current_user):
 @router.get("/find", response_model=List[ReturnHouse])
 async def search_house(
     user: current_user,
+    house_service: house_service,
     institution: str = Query(None),
     location: str = Query(None),
     price: int = Query(None),
@@ -45,7 +46,7 @@ async def search_house(
     min_bedroom_count: int = Query(None),
     max_bedroom_count: int = Query(None),
     water: WaterAccessibility = Query(None),
-    power: PowerStability = Query(),
+    power: PowerStability = Query(None),
     wifi: bool = Query(None),
     parking_space: bool = Query(None),
     ac: bool = Query(None),
@@ -71,7 +72,7 @@ async def search_house(
         "gym": gym,
         "tv": tv,
     }
-    return await house_service.search_house(user.id, house_data)
+    return await house_service.search_house(house_data)
 
 
 @router.post("/list", status_code=status.HTTP_201_CREATED, response_model=ReturnHouse)

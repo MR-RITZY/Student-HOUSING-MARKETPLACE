@@ -1,7 +1,7 @@
 from sqlalchemy.orm import mapped_column, Mapped, Relationship
 from enum import Enum
 from sqlalchemy.dialects.postgresql import UUID as PQ_UUID, ENUM as PQ_ENUM
-from sqlalchemy import String, DateTime, func, Boolean
+from sqlalchemy import String, DateTime, func, Boolean, ForeignKey, UniqueConstraint
 from uuid import UUID, uuid4
 from datetime import datetime
 
@@ -11,6 +11,11 @@ from src.stu_house_market.model.base import Base
 class Role(str, Enum):
     seeker = "seeker"
     owner = "owner"
+
+
+class AuthProvider(str, Enum):
+    local = "local"
+    google = "google"
 
 
 class Users(Base):
@@ -36,3 +41,40 @@ class Users(Base):
     houses = Relationship(
         "House", back_populates="user", lazy="selectin", cascade="all, delete-orphan"
     )
+
+    user_providers = Relationship(
+        "UserProvider",
+        back_populates="user",
+        lazy="selectin",
+        cascade="all, delete-orphan",
+    )
+
+
+class UserProvider(Base):
+    __tablename__ = "auth_provider"
+
+    id: Mapped[UUID] = mapped_column(
+        PQ_UUID(as_uuid=True), primary_key=True, nullable=False, default=uuid4
+    )
+
+    user_id: Mapped[UUID] = mapped_column(
+        PQ_UUID(as_uuid=True),
+        ForeignKey("users.id", name="user_id", ondelete="CASCADE"),
+        nullable=False,
+    )
+
+    provider: Mapped[AuthProvider] = mapped_column(
+        PQ_ENUM(AuthProvider, name="auth_provider_enum"),
+        nullable=False,
+        default=AuthProvider.local,
+    )
+
+    provider_id: Mapped[str] = mapped_column(
+        String(50), nullable=False, default=f"local_{uuid4()}"
+    )
+
+    user = Relationship("Users", back_populates="user_providers", lazy="selectin")
+
+    __table_args__ = (UniqueConstraint(
+        "user_id", "provider", name="user_provider_constraint"
+    ),)

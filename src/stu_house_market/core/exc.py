@@ -55,15 +55,37 @@ async def unverified_user(request: Request, exc: HTTPException):
 class UnverifiedUserException(HTTPException):
     pass
 
+
+async def user_not_authenticated_by_google(request: Request, exc: HTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"error": "User Not Authenticated By Google", "detail": exc.detail},
+    )
+
+
+class UserNotAuthenticatedByGoogleException(HTTPException):
+    pass
+
+
 async def unexpected_error(request: Request, exc: HTTPException):
     return JSONResponse(
         status_code=exc.status_code,
         content={"error": "Unexpected Error", "detail": exc.detail},
     )
 
-
 class UnexpectedError(HTTPException):
     pass
+
+async def limit_exceeded(request: Request, exc: HTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"error": "Limit exceeded, Too Many Request", "detail": exc.detail},
+    )
+
+
+class TooManyRequestException(HTTPException):
+    pass
+
 
 
 def register_exceptions(app: FastAPI):
@@ -73,3 +95,5 @@ def register_exceptions(app: FastAPI):
     app.add_exception_handler(InvalidTokenException, invalid_token)
     app.add_exception_handler(UnverifiedUserException, unverified_user)
     app.add_exception_handler(UnexpectedError, unexpected_error)
+    app.add_exception_handler(UserNotAuthenticatedByGoogleException, user_not_authenticated_by_google)
+    app.add_exception_handler(TooManyRequestException, limit_exceeded)

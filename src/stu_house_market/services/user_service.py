@@ -14,7 +14,7 @@ class UserService:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def insert_new_user(self, user_data: dict):
+    async def create_new_user(self, user_data: dict):
         try:
             user = Users(**user_data)
             self.db.add(user)

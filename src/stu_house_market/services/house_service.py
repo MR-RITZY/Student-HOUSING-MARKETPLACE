@@ -27,8 +27,8 @@ POWER_ORDER = {
 }
 
 WATER_ORDER = {
-    "tap inside": 1,
-    "tap outside": 2,
+    "tap inside the apartment": 1,
+    "tap outside the apartment": 2,
     "tap nearby": 3,
     "well outside": 4,
     "well nearby": 5,

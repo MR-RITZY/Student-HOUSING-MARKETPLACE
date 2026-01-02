@@ -16,15 +16,11 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str
     JWT_ACCESS_TOKEN_EXP: int
     JWT_REFRESH_TOKEN_EXP: int
-    REDIS_HOST: str 
+    REDIS_HOST: str
     REDIS_PORT: int
     REDIS_DB: int
     REDIS_PASSWORD: str
     REDIS_USERNAME: str
-    RABBITMQ_HOST: str 
-    RABBITMQ_PORT: str
-    RABBITMQ_PASSWORD: str
-    RABBITMQ_USERNAME: str
     SAFE_URL_SECRET: str
     RESEND_API_KEY: str
     MAIL_FROM: str
@@ -32,8 +28,12 @@ class Settings(BaseSettings):
     B2_APP_KEY: str
     B2_BUCKET: str
     B2_S3_ENDPOINT: str
+    GOOGLE_OAUTH2_SCREEN_CLIENT_ID:str
+    GOOGLE_OAUTH2_SCREEN_CLIENT_SECRET: str
+    SESSION_SECRET: str
+    DEFAULT_MIDDLEWARE_RATE_LIMIT: int
 
     
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(env_file="dev.env", extra="ignore")
 
 settings = Settings()
