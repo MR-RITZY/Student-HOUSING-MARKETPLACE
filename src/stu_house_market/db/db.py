@@ -5,7 +5,7 @@ from src.stu_house_market.model import Base
 from src.stu_house_market.core.config import settings
 
 db_url = (
-    f"postgresql+psycopg://{settings.DB_USERNAME}:{settings.DB_PASSWORD}@"
+    f"postgresql+asyncpg://{settings.DB_USERNAME}:{settings.DB_PASSWORD}@"
     f"{settings.DB_HOST}/{settings.DB_NAME}"
 )
 
