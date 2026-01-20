@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated, Optional
 from uuid import UUID
 
-from src.stu_house_market.model.user import Users
+from src.stu_house_market.model.user import Users, UserProvider, AuthProvider
 from src.stu_house_market.db.db import get_db
 
 
@@ -14,10 +14,11 @@ class UserService:
     def __init__(self, db: AsyncSession):
         self.db = db
 
-    async def create_new_user(self, user_data: dict):
+    async def create_new_user(self, user_data: dict, provider:AuthProvider):
         try:
             user = Users(**user_data)
-            self.db.add(user)
+            user_provider = UserProvider(user_id = user.id, provider=provider)
+            self.db.add_all(user, user_provider)
             await self.db.commit()
             await self.db.refresh(user)
             return user

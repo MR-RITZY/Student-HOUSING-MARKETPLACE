@@ -41,7 +41,7 @@ class House(Base):
     id: Mapped[UUID] = mapped_column(
         PQ_UUID(as_uuid=True), primary_key=True, nullable=False, default=uuid4
     )
-    user_id: Mapped[UUID] = mapped_column(
+    owner_id: Mapped[UUID] = mapped_column(
         PQ_UUID(as_uuid=True),
         ForeignKey("users.id", name="user_id", ondelete="CASCADE"),
         nullable=False,

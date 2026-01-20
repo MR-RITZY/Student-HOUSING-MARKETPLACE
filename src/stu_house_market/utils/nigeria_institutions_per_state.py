@@ -1,4 +1,4 @@
-[
+NIGERIA_INSTITUTIONS = [
     {
         "Abia": {
             "1": "Michael Okpara University of Agriculture, Umudike",
@@ -9,13 +9,13 @@
             "6": "Temple Gate Polytechnic, Abayi",
             "7": "Valley View Polytechnic, Aba",
             "8": "Gregory University Uturu",
-            "9": "Rhema University"
+            "9": "Rhema University",
         }
     },
     {
         "Adamawa": {
             "1": "Adamawa State polytechnic, Yola",
-            "2": "Adamawa State University, Mubi"
+            "2": "Adamawa State University, Mubi",
         }
     },
     {
@@ -26,7 +26,7 @@
             "4": "Nwafor Orizu University of Education",
             "5": "The Tansian University, Umunya",
             "6": "Madonna University, Okija",
-            "7": "St Paul's University, Awka"
+            "7": "St Paul's University, Awka",
         }
     },
     {
@@ -44,7 +44,7 @@
             "11": "School Of Basic Studies",
             "12": "College of Arts & Sciences, Nnung Ukim",
             "13": "Ritman University",
-            "14": "Sure Polytechnic, Ukanafun"
+            "14": "Sure Polytechnic, Ukanafun",
         }
     },
     {
@@ -54,7 +54,7 @@
             "3": "FGGC Bauchi",
             "4": "Lys Children School",
             "5": "Aminu Saleh College of Education, Azare",
-            "6": "National Open University Bauchi"
+            "6": "National Open University Bauchi",
         }
     },
     {
@@ -64,7 +64,7 @@
             "3": "Federal University, Otueke",
             "4": "Institute of Science and Technology Yenagoa",
             "5": "Niger Delta University",
-            "6": "Federal Science and Technical College"
+            "6": "Federal Science and Technical College",
         }
     },
     {
@@ -77,7 +77,7 @@
             "6": "Akperan Orshi college of Agriculture Yandev",
             "7": "Federal College of Education Agasha",
             "8": "College of Education Oju",
-            "9": "College of Education Kastina-Ala"
+            "9": "College of Education Kastina-Ala",
         }
     },
     {
@@ -88,7 +88,7 @@
             "5": "National Open University of Nigeria",
             "6": "Ramat Polytechnic Maiduguri",
             "7": "School of Health and Technology, Maiduguri",
-            "8": "School Of Nursing and Midwifery"
+            "8": "School Of Nursing and Midwifery",
         }
     },
     {
@@ -99,7 +99,7 @@
             "4": "Cross River State College of Education, akamkpa",
             "5": "College of Health Technology, Iboko, Okpoma, Yala",
             "6": "ST. PATRICK'S TECHNICAL COLLEGE UGEP",
-            "7": "Federal Polytechnic, Ugep"
+            "7": "Federal Polytechnic, Ugep",
         }
     },
     {
@@ -129,7 +129,7 @@
             "23": "Edwin Clark University",
             "24": "Kiagbodo Eagle Heights University, Omadino",
             "25": "Warri Nigerian Naval School",
-            "26": "Sapele Nigerian Navy Maritime University, Ibusa"
+            "26": "Sapele Nigerian Navy Maritime University, Ibusa",
         }
     },
     {
@@ -139,7 +139,7 @@
             "3": "Ebonyi State College of Education Ikwo",
             "4": "Akanu Ibiam Federal Polytechnic, Unwana",
             "5": "College of Health Sciences",
-            "6": "Ezzamgbo and Federal College of Agriculture, Ishiagu."
+            "6": "Ezzamgbo and Federal College of Agriculture, Ishiagu.",
         }
     },
     {
@@ -155,7 +155,7 @@
             "9": "College of Immaculate Conception",
             "10": "Our Saviour Institute of Science and Technology, Enugu",
             "11": "the Federal College of Education",
-            "12": "Eha-AmufuCaritas University"
+            "12": "Eha-AmufuCaritas University",
         }
     },
     {
@@ -180,7 +180,7 @@
             "18": "State School of Nursing, Sapele Road, Benin City",
             "19": "Usen Polytechnic",
             "20": "Wellspring University, Benin City",
-            "21": "World Outreach Bible College"
+            "21": "World Outreach Bible College",
         }
     },
     {
@@ -195,7 +195,7 @@
             "8": "His Mercy Computer Institute ",
             "9": "School of Nursing",
             "10": "University Of Ado-Ekiti, Ado-Ekiti",
-            "11": "University Of Science And Technology, Ifaki"
+            "11": "University Of Science And Technology, Ifaki",
         }
     },
     {
@@ -204,7 +204,7 @@
             "2": "Federal University Kashere",
             "3": "Federal College of Education-Tech Gombe",
             "4": "Gombe State University Tudun Wada, Tudun Wada",
-            "5": "National Open University Of Nigeria"
+            "5": "National Open University Of Nigeria",
         }
     },
     {
@@ -222,7 +222,7 @@
             "11": "National Horticultural Research Institute, Ibadan",
             "12": "National Open University of Nigeria",
             "13": "School of Nursing",
-            "14": "Word of Faith Bible Institute"
+            "14": "Word of Faith Bible Institute",
         }
     },
     {
@@ -232,7 +232,7 @@
             "3": "informatics Institute of Information Technology, Kazaure",
             "4": "Jigawa State College Of Agriculture, Hadejia",
             "5": "Jigawa State College of Education, Gumel, Dutse",
-            "6": "Jigawa State Polytechnic"
+            "6": "Jigawa State Polytechnic",
         }
     },
     {
@@ -264,7 +264,7 @@
             "25": "St. Gerard's School of Nursing, Kakuri",
             "26": "St. Luke Anglican School of Nursing, Wusasa, Zaria",
             "27": "The Federal College of Chemical and Leather Technology, Zaria",
-            "28": "Federal College Of Education, Zaria"
+            "28": "Federal College Of Education, Zaria",
         }
     },
     {
@@ -281,7 +281,7 @@
             "10": "king's Glory University",
             "11": "Kano University Of Technology, Kano",
             "12": "Nigerian Police Academy, Wudil",
-            "13": "School of Health Technology"
+            "13": "School of Health Technology",
         }
     },
     {
@@ -298,14 +298,14 @@
             "10": "School of Midwifery Malumfashi",
             "11": "School of Nursing Katsina",
             "12": "Umaru Musa Yaradua University",
-            "13": "Yusuf Bala Usman College of Legal and General Studies Daura"
+            "13": "Yusuf Bala Usman College of Legal and General Studies Daura",
         }
     },
     {
         "Kebbi": {
             "1": "Adamu Augie College of Education, Argungu",
             "2": "Kebbi State University of Science and Technology, Aliero",
-            "3": "Waziri Umaru Federal Polytechnic"
+            "3": "Waziri Umaru Federal Polytechnic",
         }
     },
     {
@@ -319,7 +319,7 @@
             "7": "Kogi State University, Anyigba",
             "8": "National Open University of Nigeria",
             "9": "Salem University, Lokoja",
-            "10": "The Federal Polytechnic Idah"
+            "10": "The Federal Polytechnic Idah",
         }
     },
     {
@@ -334,7 +334,7 @@
             "8": "Kwara State Polytechnic, Ilorin",
             "9": "Kwara State University",
             "10": "Landmark university omu-aran",
-            "11": "National Open University of Nigeria"
+            "11": "National Open University of Nigeria",
         }
     },
     {
@@ -410,7 +410,7 @@
             "70": "Times Journalism Institute, Surulere",
             "71": "Wolex Polytechnic",
             "72": "Yaba College Of Technology, Yaba, Lagos",
-            "73": "Yetkem Institute of Catering and Hotel Management"
+            "73": "Yetkem Institute of Catering and Hotel Management",
         }
     },
     {
@@ -423,7 +423,7 @@
             "7": "College of Agriculture, Lafia",
             "8": "Federal Polytechnic Nasarawa",
             "9": "Nacabs Polytechnic, Akwanga",
-            "10": "Nasarawa State Polytechnic, Lafia"
+            "10": "Nasarawa State Polytechnic, Lafia",
         }
     },
     {
@@ -439,7 +439,7 @@
             "10": "Federal College of Education, Kontagora",
             "11": "Federal College of Wildlife Management, New Bussa",
             "12": "Niger State College of Nursing, Bida",
-            "13": "Suleiman Barau Technical College, Suleja"
+            "13": "Suleiman Barau Technical College, Suleja",
         }
     },
     {
@@ -464,7 +464,7 @@
             "18": "Savannah College of Art and Design",
             "19": "Tai Solarin College Of Education, Ijebu-Ode",
             "20": "Yewa Central College of Education",
-            "21": "Zulikha Abiola College of Arabic And Islamic Studies"
+            "21": "Zulikha Abiola College of Arabic And Islamic Studies",
         }
     },
     {
@@ -477,7 +477,7 @@
             "6": "Ondo State University of Science and Technology",
             "7": "Wesley University of Science and Technology",
             "8": "Elizade University",
-            "9": "Adeyemi College of Education, Ondo."
+            "9": "Adeyemi College of Education, Ondo.",
         }
     },
     {
@@ -499,7 +499,7 @@
             "18": "Universal College of Technology Ile-ife",
             "19": "College of Arts and Science, Ile Ife",
             "20": "Osun State College Of Education, Ilesa",
-            "21": "Osun State College of Education, Ila-Orangun, Osun State"
+            "21": "Osun State College of Education, Ila-Orangun, Osun State",
         }
     },
     {
@@ -520,7 +520,7 @@
             "14": "Federal College of Forestry",
             "15": "Mufutau Lanihun College of Education, Ibadan",
             "16": "Oyo Stae College of Education",
-            "17": "St. Andrews College Of Education, Oyo"
+            "17": "St. Andrews College Of Education, Oyo",
         }
     },
     {
@@ -533,7 +533,7 @@
             "6": "College of Arts, Science and Technology, Kurgwi",
             "7": "College of Education, Jos",
             "8": "College of Health Technology, Zawan",
-            "9": "Federal College of Education, Pankshin"
+            "9": "Federal College of Education, Pankshin",
         }
     },
     {
@@ -548,7 +548,7 @@
             "8": "Federal College of Education Technical, Omoku",
             "9": "College Of Education, Port-Harcourt",
             "10": "Rivers State College Of Arts",
-            "11": "Rivers State College of Health Science and Technology"
+            "11": "Rivers State College of Health Science and Technology",
         }
     },
     {
@@ -559,7 +559,7 @@
             "4": "Usmanu Danfodiyo University Teaching Hospital School Of Nursing",
             "5": "Sokoto State Polytechnic",
             "6": "Haliru Binji College Of Art and Science",
-            "7": "Sokoto Teachers' College"
+            "7": "Sokoto Teachers' College",
         }
     },
     {
@@ -567,7 +567,7 @@
             "1": "Taraba State University, Jalingo",
             "2": "Taraba State Polytechnic, Jalingo",
             "3": "Federal Science and Technical College",
-            "4": "Taraba State College of Agriculture, Jalingo"
+            "4": "Taraba State College of Agriculture, Jalingo",
         }
     },
     {
@@ -575,7 +575,7 @@
             "1": "Buka Abba Ibrahim University, Damaturu",
             "2": "Federal Polytechnic Damaturu",
             "3": "College of Administrative and Business Studies, Potiskum",
-            "4": "College of Education, Gashua"
+            "4": "College of Education, Gashua",
         }
     },
     {
@@ -584,14 +584,14 @@
             "2": "Federal Polytechnic Kaura Namoda",
             "3": "Kaura Knamoda Polytechnic",
             "4": "College of Islamic Science, Gusau",
-            "5": "Federal University Gusau, Zamfara State"
+            "5": "Federal University Gusau, Zamfara State",
         }
     },
     {
         "Abuja": {
             "1": "Nigerian Turkish Nile University",
             "2": "African University of Science and Technology",
-            "3": "National Open University of Nigeria"
+            "3": "National Open University of Nigeria",
         }
-    }
+    },
 ]

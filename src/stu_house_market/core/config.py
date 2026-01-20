@@ -1,5 +1,4 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import EmailStr
 from typing import Literal
 
 class Settings(BaseSettings):
@@ -21,6 +20,10 @@ class Settings(BaseSettings):
     REDIS_DB: int
     REDIS_PASSWORD: str
     REDIS_USERNAME: str
+    RABBITMQ_USERNAME: str
+    RABBITMQ_PASSWORD: str
+    RABBITMQ_HOST: str
+    RABBITMQ_PORT: str
     SAFE_URL_SECRET: str
     RESEND_API_KEY: str
     MAIL_FROM: str
@@ -34,6 +37,6 @@ class Settings(BaseSettings):
     DEFAULT_MIDDLEWARE_RATE_LIMIT: int
 
     
-    model_config = SettingsConfigDict(env_file="dev.env", extra="ignore")
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 settings = Settings()

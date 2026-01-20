@@ -1,9 +1,10 @@
 from redis.asyncio import Redis, ConnectionPool, Connection
 from typing import Optional, Any
 from contextlib import asynccontextmanager
-
+import json
 
 from src.stu_house_market.core.config import settings
+from src.stu_house_market.core.logs import app_info, app_error
 
 connection_kwargs = dict(
     host=settings.REDIS_HOST,
@@ -61,18 +62,36 @@ class RedisManager:
 
     async def delete(self, key: str):
         return await self.redis.delete(key)
+    
+    async def setex_to_json(self, key: str, ttl: int, value: Any):
+        return await self.redis.setex(key, ttl,json.dumps(value))
+
+    async def get_from_json(self, key: str):
+        value = await self.redis.get(key)
+        return json.loads(value) if value else None
 
 
 redis_client = RedisManager()
 
-
 @asynccontextmanager
 async def redis_lifespan():
     try:
+        app_info.info("Connecting to Redis")
         redis_client.initialize_redis()
         await redis_client.ping()
+        app_info.info("Redis Connection Successfully")
         yield redis_client
     except Exception as e:
-        raise
+        app_error.error("Error Encounter While Connecting to Redis")
     finally:
         await redis_client.terminate()
+        app_info.info("Closing Redis Connection")
+
+
+def cache(key: str, data: Optional[Any]=None):
+    def wrapper():
+        redis_data = redis_client.get(key)
+        redis_client.redis.exists()
+
+
+    return wrapper

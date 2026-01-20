@@ -1,6 +1,11 @@
 from authlib.integrations.starlette_client import OAuth
 from fastapi import Request
+
+
 from src.stu_house_market.core.config import settings
+from src.stu_house_market.core.logs import app_error
+
+
 
 oauth = OAuth()
 
@@ -14,13 +19,13 @@ oauth.register(
 
 
 async def google_redirect(request: Request):
-    redirect_uri = request.url_for("validate_callback")
+    redirect_uri = request.url_for("google_oauth_callback")
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
 
 async def google_callback(request: Request):
     try:
-        
+
         token = await oauth.google.authorize_access_token(request)
         user = token.get("userinfo")
         if not user:
@@ -29,20 +34,12 @@ async def google_callback(request: Request):
             )
             user = resp.json()
 
-            """
-    firstname: Mapped[str] = mapped_column(String(50), nullable=False)
-    lastname: Mapped[str] = mapped_column(String(50), nullable=False)
-    email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
-    password: Mapped[str] = mapped_column(String(255), nullable=False)
-    is_verified: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
-    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
-    role: Mapped[Role] = mapped_column(PQ_ENUM(Role, name="role_enum"), nullable=False)
-
-"""
-            
-        return user
+        user_data = {
+            "email": user["email"],
+            "firstname": user.get("given_name"),
+            "lastname": user.get("family_name"),
+        }
+        return user_data
 
     except Exception as e:
-        print(f"Google OAuth error: {e}")
-        return None
-    
+        app_error.error(f"Encouter Error with Google OAuth: {e}")

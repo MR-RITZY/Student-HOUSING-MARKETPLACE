@@ -24,8 +24,6 @@ def get_redis_uri() -> str:
         f"async+redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB}"
     )
 
-    
-    
 
 class RateLimiterMiddleware(BaseHTTPMiddleware):
     def __init__(
@@ -62,17 +60,24 @@ def user_identifier(request: Request) -> str:
     return f"usr_{sha256(raw_id.encode()).hexdigest()}"
 
 
-async def rate_limiter(
-    request: Request, rate: Optional[int] = settings.DEFAULT_MIDDLEWARE_RATE_LIMIT // 2
+def standalone_rate_limiter(
+    rate: Optional[int] = settings.DEFAULT_MIDDLEWARE_RATE_LIMIT // 2,
 ):
-    user_id = user_identifier(request)
-    moving_window_limiter = MovingWindowRateLimiter(rate_limit_storage.get_storage())
-    is_allowed = await moving_window_limiter.hit(RateLimitItemPerSecond(rate), user_id)
-    if not is_allowed:
-        raise TooManyRequestException(
-            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail="Too many requests -- User exceeded limit",
+    async def limiter(request: Request):
+        user_id = user_identifier(request)
+        moving_window_limiter = MovingWindowRateLimiter(
+            rate_limit_storage.get_storage()
         )
+        is_allowed = await moving_window_limiter.hit(
+            RateLimitItemPerSecond(rate), user_id
+        )
+        if not is_allowed:
+            raise TooManyRequestException(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                detail="Too many requests -- User exceeded limit",
+            )
+
+    return limiter
 
 
 class RateLimitStorage:

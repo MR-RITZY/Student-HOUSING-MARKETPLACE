@@ -1,0 +1,10 @@
+services:
+  student_housing_platform:
+    build: .
+    image: farquest/stu_house_marketplace
+    container_name: stu_house_marketplace 
+    ports:
+      - 8080:8080
+    env_file:
+      - .env-prod
+    restart: unless-stopped

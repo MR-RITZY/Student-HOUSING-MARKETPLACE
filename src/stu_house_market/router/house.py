@@ -2,11 +2,11 @@ from fastapi import APIRouter, Query, Depends, status
 from typing import Annotated, List
 
 from src.stu_house_market.services.house_service import get_house_service, HouseService
-from src.stu_house_market.core.auth import get_user_from_login
+from src.stu_house_market.core.auth import get_current_user
 from src.stu_house_market.model.user import Users
 from src.stu_house_market.schema.house import PostHouse
-from src.stu_house_market.model.house import PowerStability, WaterAccessibility
-from src.stu_house_market.core.image_handler import (
+from src.stu_house_market.model.house import PowerStability, WaterAccessibility, EnvironmentSecurity
+from src.stu_house_market.utils.image_handler import (
     generate_presigned_upload_urls,
     generate_presigned_download_urls,
 )
@@ -16,11 +16,16 @@ from src.stu_house_market.schema.house import (
     UploadImageURLs,
     DownloadImageURLs,
 )
-from src.stu_house_market.core.exc import UnexpectedError
+from src.stu_house_market.core.exc import UnexpectedError, ResourceNotFoundException
+from src.stu_house_market.core.rate_limiter import standalone_rate_limiter
+from src.stu_house_market.utils.institutions_validator import validate_institution
+from src.stu_house_market.services.cache_service import CacheService, get_cache
 
-router = APIRouter(prefix="/house", tags=["House"])
+
+router = APIRouter(prefix="/houses", tags=["House"])
 house_service = Annotated[HouseService, Depends(get_house_service)]
-current_user = Annotated[Users, Depends(get_user_from_login)]
+cache = Annotated[CacheService, Depends(get_cache)]
+current_user = Annotated[Users, Depends(get_current_user)]
 
 
 @router.get("/upload_url", response_model=List[UploadImageURLs])
@@ -33,11 +38,13 @@ async def get_download_url(file_keys: List[str], user: current_user):
     return generate_presigned_download_urls(file_keys)
 
 
-@router.get("/find", response_model=List[ReturnHouse])
+@router.get("/find/{institution}", response_model=List[ReturnHouse])
 async def search_house(
     user: current_user,
     house_service: house_service,
-    institution: str = Query(None),
+    cache: cache,
+    rate_limit: Annotated[None, Depends(standalone_rate_limiter(2))],
+    institution: str = Annotated[str, Depends(validate_institution)],
     location: str = Query(None),
     price: int = Query(None),
     max_price: int = Query(None),
@@ -47,6 +54,7 @@ async def search_house(
     max_bedroom_count: int = Query(None),
     water: WaterAccessibility = Query(None),
     power: PowerStability = Query(None),
+    security: EnvironmentSecurity = Query(None),
     wifi: bool = Query(None),
     parking_space: bool = Query(None),
     ac: bool = Query(None),
@@ -65,6 +73,7 @@ async def search_house(
         "max_bedroom_count": max_bedroom_count,
         "water": water,
         "power": power,
+        "security": security,
         "wifi": wifi,
         "parking_space": parking_space,
         "ac": ac,
@@ -72,7 +81,15 @@ async def search_house(
         "gym": gym,
         "tv": tv,
     }
-    return await house_service.search_house(house_data)
+
+    result = await cache.get_or_set(
+        house_data, 3 * 3600, house_service.search_house, house_data
+    )
+    if not result:
+        raise ResourceNotFoundException(
+            status.HTTP_404_NOT_FOUND, detail="House With Such Description Not Found"
+        )
+    return result
 
 
 @router.post("/list", status_code=status.HTTP_201_CREATED, response_model=ReturnHouse)

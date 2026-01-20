@@ -2,7 +2,7 @@ from pydantic import BaseModel, field_validator, Field, ConfigDict
 from email_validator import validate_email
 from uuid import UUID
 
-from src.stu_house_market.core.utils import validate_password
+from src.stu_house_market.core.password_utils import validate_password
 from src.stu_house_market.model.user import Role
 
 
@@ -47,9 +47,6 @@ class UserCreated(BaseModel):
 class UserLogin(BaseModel):
     message: str
     user: User
-    access_token: str
-    refresh_token : str
-    token_type: str
 
     model_config = ConfigDict(from_attributes=True)
 

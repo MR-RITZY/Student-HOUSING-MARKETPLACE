@@ -13,4 +13,3 @@ wheels/
 .env_prod
 .env-dev
 .env-prod
-dev.env

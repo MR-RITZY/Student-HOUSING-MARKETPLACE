@@ -27,9 +27,8 @@ class Users(Base):
     firstname: Mapped[str] = mapped_column(String(50), nullable=False)
     lastname: Mapped[str] = mapped_column(String(50), nullable=False)
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
-    password: Mapped[str] = mapped_column(String(255), nullable=False)
+    password: Mapped[str] = mapped_column(String(255), nullable=True)
     is_verified: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
-    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
     role: Mapped[Role] = mapped_column(PQ_ENUM(Role, name="role_enum"), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, default=func.now()
@@ -67,10 +66,6 @@ class UserProvider(Base):
         PQ_ENUM(AuthProvider, name="auth_provider_enum"),
         nullable=False,
         default=AuthProvider.local,
-    )
-
-    provider_id: Mapped[str] = mapped_column(
-        String(50), nullable=False, default=f"local_{uuid4()}"
     )
 
     user = Relationship("Users", back_populates="user_providers", lazy="selectin")

@@ -86,6 +86,27 @@ async def limit_exceeded(request: Request, exc: HTTPException):
 class TooManyRequestException(HTTPException):
     pass
 
+async def institution_not_recognized(request: Request, exc: HTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"error": "Institution presented not recognized", "detail": exc.detail},
+    )
+
+
+class InstitutionNotRecognizedException(HTTPException):
+    pass
+
+
+async def resource_not_found(request: Request, exc: HTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"error": "Not Found", "detail": exc.detail},
+    )
+
+
+class ResourceNotFoundException(HTTPException):
+    pass
+
 
 
 def register_exceptions(app: FastAPI):
@@ -97,3 +118,5 @@ def register_exceptions(app: FastAPI):
     app.add_exception_handler(UnexpectedError, unexpected_error)
     app.add_exception_handler(UserNotAuthenticatedByGoogleException, user_not_authenticated_by_google)
     app.add_exception_handler(TooManyRequestException, limit_exceeded)
+    app.add_exception_handler(InstitutionNotRecognizedException, institution_not_recognized)
+    app.add_exception_handler(ResourceNotFoundException, resource_not_found)
