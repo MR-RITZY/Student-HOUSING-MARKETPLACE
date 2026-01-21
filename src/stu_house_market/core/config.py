@@ -25,8 +25,6 @@ class Settings(BaseSettings):
     RABBITMQ_HOST: str
     RABBITMQ_PORT: str
     SAFE_URL_SECRET: str
-    RESEND_API_KEY: str
-    MAIL_FROM: str
     B2_APP_KEY_ID: str
     B2_APP_KEY: str
     B2_BUCKET: str
@@ -37,6 +35,6 @@ class Settings(BaseSettings):
     DEFAULT_MIDDLEWARE_RATE_LIMIT: int
 
     
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(env_file=".env-prod", extra="ignore")
 
 settings = Settings()

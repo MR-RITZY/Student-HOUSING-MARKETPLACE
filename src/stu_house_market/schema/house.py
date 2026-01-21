@@ -4,7 +4,7 @@ from uuid import UUID
 
 from src.stu_house_market.model.house import PowerStability, WaterAccessibility, EnvironmentSecurity
 from src.stu_house_market.schema.user import User
-from stu_house_market.utils.institutions_validator import _validate_institution
+from src.stu_house_market.utils.institutions_validator import _validate_institution
 
 
 class PostHouse(BaseModel):
