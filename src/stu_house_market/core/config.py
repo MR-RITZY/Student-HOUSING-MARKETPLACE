@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     RABBITMQ_PASSWORD: str
     RABBITMQ_HOST: str
     RABBITMQ_PORT: str
+    RABBITMQ_DB: str
     SAFE_URL_SECRET: str
     B2_APP_KEY_ID: str
     B2_APP_KEY: str

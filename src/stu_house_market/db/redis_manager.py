@@ -86,12 +86,3 @@ async def redis_lifespan():
     finally:
         await redis_client.terminate()
         app_info.info("Closing Redis Connection")
-
-
-def cache(key: str, data: Optional[Any]=None):
-    def wrapper():
-        redis_data = redis_client.get(key)
-        redis_client.redis.exists()
-
-
-    return wrapper

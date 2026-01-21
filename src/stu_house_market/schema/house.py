@@ -3,7 +3,6 @@ from typing import Optional, List, Dict, Literal
 from uuid import UUID
 
 from src.stu_house_market.model.house import PowerStability, WaterAccessibility, EnvironmentSecurity
-from src.stu_house_market.schema.user import User
 from src.stu_house_market.utils.institutions_validator import _validate_institution
 
 

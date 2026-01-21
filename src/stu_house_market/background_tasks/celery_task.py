@@ -5,20 +5,31 @@ from src.stu_house_market.core.config import settings
 from src.stu_house_market.core.logs import app_info
 
 
-broker_url = (
-    f"amqp://{settings.RABBITMQ_USERNAME}:{settings.RABBITMQ_PASSWORD}@"
-    f"{settings.RABBITMQ_HOST}:{settings.RABBITMQ_PORT}//"
-)
+def get_broker_url():
+    if settings.ENV == "PROD":
+        return (
+            f"amqps://{settings.RABBITMQ_USERNAME}:{settings.RABBITMQ_PASSWORD}@"
+            f"{settings.RABBITMQ_HOST}:{settings.RABBITMQ_PORT}//{settings.RABBITMQ_DB}"
+        )
+    return (
+        f"amqp://{settings.RABBITMQ_USERNAME}:{settings.RABBITMQ_PASSWORD}@"
+        f"{settings.RABBITMQ_HOST}:{settings.RABBITMQ_PORT}//"
+    )
 
-backend_url = (
-    f"redis://{settings.REDIS_USERNAME}:{settings.REDIS_PASSWORD}@"
-    f"{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB}"
-)
+
+def get_backend_url():
+    if settings.ENV == "PROD":
+        return (
+            f"redis://{settings.REDIS_USERNAME}:{settings.REDIS_PASSWORD}"
+            f"@{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB}"
+        )
+    return f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB}"
+
 
 app = Celery(
     "stu_house_market background_task worker",
-    broker=broker_url,
-    backend=backend_url,
+    broker=get_broker_url(),
+    backend=get_backend_url(),
     include=["src.stu_house_market.background_tasks.celery_task"],
 )
 
