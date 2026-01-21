@@ -63,7 +63,7 @@ register_exceptions(app)
 
 @app.get("/")
 async def get_root():
-    return RedirectResponse("/docs", status_code=status.HTTP_301_MOVED_PERMANENTLY)
+    return RedirectResponse(settings.FRONTEND_HOST, status_code=status.HTTP_301_MOVED_PERMANENTLY)
 
 
 
