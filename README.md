@@ -79,7 +79,7 @@ This approach ensures efficient media handling, better performance, and improved
   4. User clicks the link and is verified if the token is valid and unexpired
   5. After successful verification, the user is redirected to the frontend home page
 
-***Login and business related routes are only accessible to user after user verification**
+**Login and business related routes are only accessible to user after user verification**
 
 * Email sending and verification tasks are handled asynchronously by a **separate Celery worker**
 
@@ -151,8 +151,8 @@ The following features are **not yet implemented** and are part of ongoing devel
 > Requires Docker and Docker Compose
 
 ```bash
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
+git clone https://github.com/MR-RITZY/Student-HOUSING-MARKETPLACE.git
+cd Student-HOUSING-MARKETPLACE.git
 docker compose up --build
 ```
 
