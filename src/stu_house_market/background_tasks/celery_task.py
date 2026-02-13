@@ -2,7 +2,7 @@ from celery import Celery
 
 
 from src.stu_house_market.core.config import settings
-from src.stu_house_market.core.logs import app_info
+from src.stu_house_market.core.server_logging import app_info
 
 
 def get_broker_url():

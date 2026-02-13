@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 
 from src.stu_house_market.model import Base
 from src.stu_house_market.core.config import settings
-from src.stu_house_market.core.logs import app_info, app_error
+from src.stu_house_market.core.server_logging import app_info, app_error
 
 db_url = (
     f"postgresql+asyncpg://{settings.DB_USERNAME}:{settings.DB_PASSWORD}@"
@@ -33,7 +33,7 @@ async def db_lifespan():
             app_info.info("All Tables Present")
             yield
         except Exception as e:
-            app_error.error(f"Encounter Error While Connecting To Database: {e}")
+            app_error.error(f"Encounter Error While Connecting To Database:\n{e}")
             yield
         finally:
             await async_engine.dispose()

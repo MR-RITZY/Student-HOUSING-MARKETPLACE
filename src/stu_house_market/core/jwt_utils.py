@@ -4,7 +4,7 @@ from typing import Literal
 from uuid import uuid4
 
 from src.stu_house_market.core.config import settings
-from src.stu_house_market.core.logs import app_error
+from src.stu_house_market.core.server_logging import app_error
 
 
 

@@ -89,6 +89,11 @@ class HouseService:
     def __init__(self, db: AsyncSession):
         self.db = db
 
+
+
+    async def get_house_by_id(self, id: UUID):
+        return await self.db.get(id)
+
     async def save_house(self, user_id: UUID, house_data: dict):
         try:
             house = House(user_id=user_id, **house_data)

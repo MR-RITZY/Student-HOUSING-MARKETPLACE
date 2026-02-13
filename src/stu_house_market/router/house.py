@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Query, Depends, status
-from typing import Annotated, List
+from typing import Annotated, List, NewType
+from uuid import UUID
 
 from src.stu_house_market.services.house_service import get_house_service, HouseService
 from src.stu_house_market.core.auth import get_current_user
@@ -38,8 +39,8 @@ async def get_download_url(file_keys: List[str], user: current_user):
     return generate_presigned_download_urls(file_keys)
 
 
-@router.get("/find/{institution}", response_model=List[ReturnHouse])
-async def search_house(
+@router.get("/{institution}", response_model=List[ReturnHouse])
+async def get_houses(
     user: current_user,
     house_service: house_service,
     cache: cache,
@@ -83,8 +84,7 @@ async def search_house(
     }
 
     result = await cache.get_or_set(
-        house_data, 3 * 3600, house_service.search_house, house_data
-    )
+        house_data, "house", house_service.search_house, 3 * 3600, house_data)
     if not result:
         raise ResourceNotFoundException(
             status.HTTP_404_NOT_FOUND, detail="House With Such Description Not Found"
@@ -92,7 +92,7 @@ async def search_house(
     return result
 
 
-@router.post("/list", status_code=status.HTTP_201_CREATED, response_model=ReturnHouse)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=ReturnHouse)
 async def post_house(
     user: current_user, house: PostHouse, house_service: house_service
 ):
@@ -103,3 +103,8 @@ async def post_house(
             detail="Unable to save given to the database --- Something Wrong with Data Field Given",
         )
     return new_house
+
+
+@router.get("/{id}", response_model=ReturnHouse)
+async def get_house(id: UUID, user: current_user, house_service:house_service, cache: cache):
+    return await cache.get_or_set(str(id), "house", house_service.get_house_by_id, id)

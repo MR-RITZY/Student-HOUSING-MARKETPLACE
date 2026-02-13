@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 import json
 
 from src.stu_house_market.core.config import settings
-from src.stu_house_market.core.logs import app_info, app_error
+from src.stu_house_market.core.server_logging import app_info, app_error
 
 connection_kwargs = dict(
     host=settings.REDIS_HOST,
@@ -82,7 +82,7 @@ async def redis_lifespan():
         app_info.info("Redis Connection Successfully")
         yield redis_client
     except Exception as e:
-        app_error.error("Error Encounter While Connecting to Redis")
+        app_error.error(f"Error Encounter While Connecting to Redis:\n{e}")
     finally:
         await redis_client.terminate()
         app_info.info("Closing Redis Connection")

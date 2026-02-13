@@ -36,6 +36,6 @@ class Settings(BaseSettings):
     DEFAULT_MIDDLEWARE_RATE_LIMIT: int
 
     
-    model_config = SettingsConfigDict(env_file=".env-prod", extra="ignore")
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 settings = Settings()

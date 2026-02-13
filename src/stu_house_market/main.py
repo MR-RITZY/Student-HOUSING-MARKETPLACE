@@ -17,7 +17,7 @@ from src.stu_house_market.core.rate_limiter import (
     RateLimiterMiddleware,
     rate_limit_storage,
 )
-from src.stu_house_market.core.logs import app_info
+from src.stu_house_market.core.server_logging import app_info
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
