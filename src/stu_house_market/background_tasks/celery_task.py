@@ -1,8 +1,12 @@
 from celery import Celery
+from celery.exceptions import TimeoutError
+from kombu.exceptions import OperationalError
+from contextlib import contextmanager
+
 
 
 from src.stu_house_market.core.config import settings
-from src.stu_house_market.core.server_logging import app_info
+from src.stu_house_market.core.server_logging import app_info, app_error
 
 
 def get_broker_url():
@@ -49,3 +53,24 @@ def background_task_sender(task_name: str, task_data: dict):
     app_info.info(f"Sending Background: {task_name}")
     app.send_task(task_name, kwargs=task_data)
     app_info.info("Task sent")
+
+
+@contextmanager
+def check_celery_worker():
+    try:
+        inspect = app.control.inspect(timeout=10)
+        result = inspect.ping()
+
+        if not result:
+            app_error.error("No Celery workers available")
+        else:
+            workers = list(result.keys())
+            app_info.info(f"Celery workers healthy: {workers}")
+            
+        yield
+
+    except (TimeoutError, OperationalError) as e:
+        app_error.error(f"Celery worker connection failed: {e}")
+
+    except Exception as e:
+        app_error.error(f"Unexpected Celery health check error: {e}" )

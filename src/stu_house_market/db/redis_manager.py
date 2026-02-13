@@ -1,4 +1,5 @@
 from redis.asyncio import Redis, ConnectionPool, Connection, SSLConnection
+from redis.exceptions import ConnectionError
 from typing import Optional, Any
 from contextlib import asynccontextmanager
 import json
@@ -84,8 +85,9 @@ async def redis_lifespan():
         await redis_client.ping()
         app_info.info("Redis Connection Successfully")
         yield redis_client
-    except Exception as e:
+    except ConnectionError as e:
         app_error.error(f"Error Encounter While Connecting to Redis:\n{e}")
+        raise
     finally:
         await redis_client.terminate()
         app_info.info("Closing Redis Connection")

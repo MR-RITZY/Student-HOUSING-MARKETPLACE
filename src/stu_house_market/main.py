@@ -18,6 +18,8 @@ from src.stu_house_market.core.rate_limiter import (
     rate_limit_storage,
 )
 from src.stu_house_market.core.server_logging import app_info
+from src.stu_house_market.core.broker_alive import check_broker
+from src.stu_house_market.background_tasks.celery_task import check_celery_worker
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -26,10 +28,13 @@ async def lifespan(app: FastAPI):
     async with AsyncExitStack() as stack:
         await stack.enter_async_context(db_lifespan())
         await stack.enter_async_context(redis_lifespan())
+        stack.enter_context(check_broker())
+        stack.enter_context(check_celery_worker())
         rate_limit_storage.init_storage()
         app_info.info("Start-Ups set up Completely")
         yield
         app_info.info("Application Shutting Down: Closing App's Resources")
+    
 
 
 app = FastAPI(lifespan=lifespan, root_path="/api/v1/student-housing")
