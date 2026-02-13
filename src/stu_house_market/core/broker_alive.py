@@ -46,9 +46,9 @@ def check_broker():
     try:
         connection = BlockingConnection(connection_params)
         if connection.is_open:
-            app_info.info("RabbitMQ connection successful.")
+            app_info.info("RabbitMQ Connection Successful.")
             connection.close()
         yield
     except (AMQPConnectionError, AMQPChannelError) as exc:
-        app_error.critical(f"Failed to connect to RabbitMQ: {exc}")
+        app_error.critical(f"Failed to Connect to RabbitMQ: {exc}")
         raise

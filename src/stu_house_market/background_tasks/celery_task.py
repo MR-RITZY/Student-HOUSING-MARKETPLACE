@@ -4,30 +4,30 @@ from kombu.exceptions import OperationalError
 from contextlib import contextmanager
 
 
-
 from src.stu_house_market.core.config import settings
 from src.stu_house_market.core.server_logging import app_info, app_error
 
 
 def get_broker_url():
-    if settings.ENV == "PROD":
-        return (
-            f"amqps://{settings.RABBITMQ_USERNAME}:{settings.RABBITMQ_PASSWORD}@"
-            f"{settings.RABBITMQ_HOST}:{settings.RABBITMQ_PORT}//{settings.RABBITMQ_DB}"
-        )
-    return (
-        f"amqp://{settings.RABBITMQ_USERNAME}:{settings.RABBITMQ_PASSWORD}@"
-        f"{settings.RABBITMQ_HOST}:{settings.RABBITMQ_PORT}//"
+    protocol = "amqps" if settings.ENV == "PROD" else "amqp"
+    endpoint = f"{settings.RABBITMQ_HOST}:{settings.RABBITMQ_PORT}"
+    auth_cred = (
+        f"{settings.RABBITMQ_USERNAME}:{settings.RABBITMQ_PASSWORD}"
+        if settings.RABBITMQ_USERNAME and settings.RABBITMQ_PASSWORD
+        else ""
     )
+
+    return f"{protocol}://{auth_cred}@{endpoint}//{settings.RABBITMQ_DB}"
 
 
 def get_backend_url():
-    if settings.ENV == "PROD":
-        return (
-            f"redis://{settings.REDIS_USERNAME}:{settings.REDIS_PASSWORD}"
-            f"@{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB}"
-        )
-    return f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB}"
+    endpoint = f"{settings.REDIS_HOST}:{settings.REDIS_PORT}"
+    auth_cred = (
+        f"{settings.REDIS_USERNAME}:{settings.REDIS_PASSWORD}"
+        if settings.REDIS_USERNAME and settings.REDIS_PASSWORD
+        else ""
+    )
+    return f"redis://{auth_cred}@{endpoint}//{settings.RABBITMQ_DB}"
 
 
 app = Celery(
@@ -58,7 +58,7 @@ def background_task_sender(task_name: str, task_data: dict):
 @contextmanager
 def check_celery_worker():
     try:
-        inspect = app.control.inspect(timeout=10)
+        inspect = app.control.inspect(timeout=5)
         result = inspect.ping()
 
         if not result:
@@ -66,11 +66,11 @@ def check_celery_worker():
         else:
             workers = list(result.keys())
             app_info.info(f"Celery workers healthy: {workers}")
-            
+
         yield
 
     except (TimeoutError, OperationalError) as e:
         app_error.error(f"Celery worker connection failed: {e}")
 
     except Exception as e:
-        app_error.error(f"Unexpected Celery health check error: {e}" )
+        app_error.error(f"Unexpected Celery health check error: {e}")

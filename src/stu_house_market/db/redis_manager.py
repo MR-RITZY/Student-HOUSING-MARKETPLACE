@@ -21,13 +21,11 @@ connection_kwargs = dict(
 )
 
 
-if settings.ENV == "PROD":
-    connection_kwargs.update(
-        {
-            "username": settings.REDIS_USERNAME,
-            "password": settings.REDIS_PASSWORD,
-        }
-    )
+if settings.REDIS_USERNAME:
+    connection_kwargs["username"] = settings.REDIS_USERNAME
+
+if settings.REDIS_PASSWORD:
+    connection_kwargs["password"] = settings.REDIS_PASSWORD
 
 
 class RedisManager:
