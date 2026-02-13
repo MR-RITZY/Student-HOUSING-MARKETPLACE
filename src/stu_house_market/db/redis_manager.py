@@ -1,4 +1,4 @@
-from redis.asyncio import Redis, ConnectionPool, Connection
+from redis.asyncio import Redis, ConnectionPool, Connection, SSLConnection
 from typing import Optional, Any
 from contextlib import asynccontextmanager
 import json
@@ -38,7 +38,9 @@ class RedisManager:
         if self.redis:
             return
         self.pool = ConnectionPool(
-            connection_class=Connection, max_connections=10, **connection_kwargs
+            connection_class = SSLConnection if settings.ENV == "PROD" else Connection,
+            max_connections=10,
+            **connection_kwargs,
         )
         self.redis = Redis(connection_pool=self.pool)
 
@@ -62,9 +64,9 @@ class RedisManager:
 
     async def delete(self, key: str):
         return await self.redis.delete(key)
-    
+
     async def setex_to_json(self, key: str, ttl: int, value: Any):
-        return await self.redis.setex(key, ttl,json.dumps(value))
+        return await self.redis.setex(key, ttl, json.dumps(value))
 
     async def get_from_json(self, key: str):
         value = await self.redis.get(key)
@@ -72,6 +74,7 @@ class RedisManager:
 
 
 redis_client = RedisManager()
+
 
 @asynccontextmanager
 async def redis_lifespan():
